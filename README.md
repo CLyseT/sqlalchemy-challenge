@@ -1,6 +1,6 @@
 # sqlalchemy-challenge
 
-Final codes can be found in the SQL Folder.
+Final codes can be found in the CodeFolder.
 
 The following will provide the cell numbers for each requests.
 

@@ -27,5 +27,5 @@ The following will provide the cell numbers for each requests.
 - Design a query to retrieve the last 12 months of temperature observation data (TOBS): Cell 464
 - Filter by the station with the highest number of observations: Cell 464
 - Query the last 12 months of temperature observation data for this station: Cell 464
-- Plot the results as a histogram with bins=12L Cell 466
+- Plot the results as a histogram with bins=12: Cell 466
 

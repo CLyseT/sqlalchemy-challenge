@@ -30,8 +30,8 @@ def welcome():
            f"/api/v1.0/precipitation<br/>"
            f"/api/v1.0/station<br/>"
            f"/api/v1.0/tobs<br/>"
-           f"/api/v1.0/<start><br/>"
-           f"/api/v1.0/<start>/<end><br/>"
+           f"/api/v1.0/start<br/>"
+           f"/api/v1.0/start/end<br/>"
            )
 
 @app.route("/api/v1.0/precipitation")
@@ -106,7 +106,7 @@ def tobs():
     
      return jsonify(temp_list)
 
-@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/start")
 def start(start):
      engine = create_engine("sqlite:///hawaii.sqlite")
 
@@ -136,7 +136,7 @@ def start(start):
      else:
         return jsonify (f"ERROR: The start date you entered was not found")
 
-@app.route("/api/v1.0/<start>/<end>")
+@app.route("/api/v1.0/start/end")
 def start_end(start, end):
      engine = create_engine("sqlite:///hawaii.sqlite")
 

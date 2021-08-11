@@ -107,64 +107,61 @@ def tobs():
      return jsonify(temp_list)
 
 @app.route("/api/v1.0/start")
-def start(start):
+def start():
      engine = create_engine("sqlite:///hawaii.sqlite")
 
      Base = automap_base()
      Base.prepare(engine, reflect=True)  
 
      Measurement = Base.classes.measurement
+     Station = Base.classes.station
+     
      session = Session(engine)
 
-     #Set Start and End Dates
-     start_date = session.query(func.min(Measurement.date)).first()[0]
-     end_date = session.query(func.max(Measurement.date)).first()[0]
+     #Set Start
+     start_date = 8/23/2016
      
+     #INNER JOIN
      #Set parameters
-     if start >= start_date:
-        new_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-            filter(Measurement.date >= start)
-        
-     if start <= end_date:
-        new_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-            filter(Measurement.date <= end_date).all()[0]
+     active_station = session.query(Measurement, Station)\
+            .join(Measurement, Measurement.station == Station.station).\
+            filter(Measurement.station == 'USC00519281').\
+            filter(Measurement.date == start_date)  
 
-        return (f"Minimum Temp: {new_temp[0]}<br/>"
-                        f"Average Temp: {new_temp[1]}<br/>"
-                        f"Maximum Temp: {new_temp[2]}"
-        )
-     else:
-        return jsonify (f"ERROR: The start date you entered was not found")
-
+     date = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+            filter(Measurement.tobs == active_station).all()
+            
+     session.close()
+     
+     return jsonify(date)
+     
 @app.route("/api/v1.0/start/end")
-def start_end(start, end):
+def start_end():
+     
      engine = create_engine("sqlite:///hawaii.sqlite")
 
      Base = automap_base()
      Base.prepare(engine, reflect=True)   
 
      Measurement = Base.classes.measurement
+     Station = Base.classes.station
      session = Session(engine)
 
      #Set Start and End Dates
-     start_date = session.query(func.min(Measurement.date)).first()[0]
-     end_date = session.query(func.max(Measurement.date)).first()[0]
-     
-     #Set parameters
-     if start >= start_date:
-        new_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-            filter(Measurement.date >= start)
+     start_date = 8/1/2016
+     end_date = 8/1/2017
+    
+     active_station = session.query(Measurement, Station)\
+            .join(Measurement, Measurement.station == Station.station).\
+            filter(Measurement.station == 'USC00519281').\
+            filter(Measurement.date == start_date | end_date)  
 
-     if end <= end_date:
-        new_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date <= end)
+     date_two = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+            filter(Measurement.tobs == active_station).all()
         
-        return (f"Minimum Temp: {new_temp[0]}<br/>"
-                        f"Average Temp: {new_temp[1]}<br/>"
-                        f"Maximum Temp: {new_temp[2]}"
-        )
-     else:
-        return jsonify (f"ERROR: The start date and end date you entered were not found")
+     session.close()
+     
+     return jsonify(date_two)
 
 if __name__ == '__main__':
     app.run(debug=True)
